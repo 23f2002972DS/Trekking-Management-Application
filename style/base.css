@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    --bg-color: #fdfaf6;
+    --primary: #ffd803;
+    --secondary: #e3f6f5;
+    --dark: #272343;
+    --alert: #ff5470;
+    --border: 4px solid var(--dark);
+    --shadow: 6px 6px 0px var(--dark);
+}
+
+body, html {
+    margin: 0; padding: 0;
+    font-family: 'Space Mono', monospace;
+    background-color: var(--bg-color);
+    color: var(--dark);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.brutal-container {
+    flex: 1;
+    padding: 2rem;
+    padding-bottom: 100px; /* Space for bottom nav */
+    overflow-y: auto;
+}
+
+.brutal-box {
+    background: white;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+.brutal-box.yellow { background: var(--primary); }
+.brutal-box.blue { background: var(--secondary); }
+
+h1, h2, h3 { text-transform: uppercase; margin-top: 0; }
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 3px solid var(--dark);
+    box-shadow: 3px 3px 0px var(--dark);
+    margin-bottom: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+button, .brutal-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--primary);
+    color: var(--dark);
+    border: 3px solid var(--dark);
+    box-shadow: 4px 4px 0px var(--dark);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+button:active, .brutal-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px var(--dark);
+}
+.btn-red { background: var(--alert); color: white; }
+
+/* Sticky Bottom Nav */
+.bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; width: 100%;
+    background: var(--dark);
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 0;
+    border-top: var(--border);
+    z-index: 100;
+}
+.bottom-nav a {
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.bottom-nav a:hover { color: var(--primary); }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: var(--border);
+    background: white;
+}
+th, td {
+    border: 2px solid var(--dark);
+    padding: 12px;
+    text-align: left;
+}
+th { background: var(--primary); text-transform: uppercase; }
