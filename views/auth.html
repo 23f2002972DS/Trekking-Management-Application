@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block nav %}
+<li class="nav-item"><a class="nav-link active" href="/client/login">Logout</a></li>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card bg-dark text-white shadow text-center">
+            <div class="card-header bg-secondary">Authenticate Login</div>
+            <div class="card-body">
+                {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+                <form method="POST" action="/client/login">
+                    <div class="mb-3">
+                        <label>Handle</label>
+                        <input type="text" name="handle" class="form-control bg-dark text-white" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Passkey</label>
+                        <input type="password" name="pwd" class="form-control bg-dark text-white" required>
+                    </div>
+                    <button class="btn btn-primary w-100">Login</button>
+                </form>
+                <div class="text-center mt-3">
+                     <a href="/auth/register">Register New Account</a>
+                     </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "layout.html" %}
+{% block nav %}
+<li class="nav-item"><a class="nav-link active" href="/manager/dash">Admin Dashboard</a></li>
+{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8">
+        <h2>Manager Console</h2>
+    </div>
+    <div class="col-md-4">
+        <form method="GET" action="/manager/dash" id="manager-search-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control bg-dark text-white" placeholder="Search..." value="{{ q }}">
+                <button class="btn btn-secondary" type="submit">Search</button>
+                <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='/manager/dash'">Clear</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-3"><div class="card bg-primary text-white mb-3"><div class="card-body"><h5>Total Treks</h5><h3>{{ stats.total_treks }}</h3></div></div></div>
+    <div class="col-md-3"><div class="card bg-success text-white mb-3"><div class="card-body"><h5>Total Clients</h5><h3>{{ stats.total_clients }}</h3></div></div></div>
+    <div class="col-md-3"><div class="card bg-info text-white mb-3"><div class="card-body"><h5>Total Guides</h5><h3>{{ stats.total_guides }}</h3></div></div></div>
+    <div class="col-md-3"><div class="card bg-warning text-dark mb-3"><div class="card-body"><h5>Reservations</h5><h3>{{ stats.total_reservations }}</h3></div></div></div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-5">
+        <div class="card bg-dark text-white">
+            <div class="card-header bg-secondary">Create Trek</div>
+            <div class="card-body">
+                <form method="POST" action="/manager/add_trek">
+                    <div class="mb-2"><input type="text" name="dest" class="form-control bg-dark text-white" placeholder="Destination" required></div>
+                    <div class="mb-2"><input type="text" name="region" class="form-control bg-dark text-white" placeholder="Region" required></div>
+                    <div class="mb-2">
+                        <select name="difficulty" class="form-control bg-dark text-white" required>
+                            <option value="">-- Challenge Level --</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><input type="number" name="duration" class="form-control bg-dark text-white" placeholder="Duration (days)"></div>
+                    <div class="mb-2"><input type="number" name="cap" class="form-control bg-dark text-white" placeholder="Capacity" required></div>
+                    <div class="mb-2"><label>Start Date</label><input type="date" name="start_date" class="form-control bg-dark text-white" required></div>
+                    <div class="mb-2"><label>End Date</label><input type="date" name="end_date" class="form-control bg-dark text-white" required></div>
+                    <div class="mb-2">
+                        <label>Assign Guide (Optional)</label>
+                        <select name="guide_id" class="form-control bg-dark text-white">
+                            <option value="">-- Select --</option>
+                            {% for g in guides %}
+                                {% if g.is_approved and g.is_active %}<option value="{{ g.pid }}">{{ g.identity_handle }}</option>{% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-success w-100">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-7">
+        <div class="card bg-dark text-white mb-4">
+            <div class="card-header bg-secondary">Roster</div>
+            <div class="card-body">
+                <table class="table table-dark table-hover table-sm">
+                    <thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                        {% for u in clients + guides %}
+                        <tr>
+                            <td>{{ u.identity_handle }}</td>
+                            <td>{{ u.profile_type }}</td>
+                            <td>
+                                {% if not u.is_active %}<span class="badge bg-danger">Banned</span>
+                                {% elif u.profile_type == 'guide' and not u.is_approved %}<span class="badge bg-warning">Pending</span>
+                                {% else %}<span class="badge bg-success">Active</span>{% endif %}
+                            </td>
+                            <td>
+                                {% if u.profile_type == 'guide' and not u.is_approved and u.is_active %}
+                                <form method="POST" action="/manager/approve/{{ u.pid }}" class="d-inline"><button class="btn btn-sm btn-info">Approve</button></form>
+                                {% endif %}
+                                {% if u.is_active and u.profile_type != 'manager' %}
+                                <form method="POST" action="/manager/ban/{{ u.pid }}" class="d-inline"><button class="btn btn-sm btn-danger">Ban</button></form>
+                                {% else %}
+                                <form method="POST" action="/manager/delete_user/{{ u.pid }}" class="d-inline" onsubmit="return confirm('Kya aap yeh user ko delete karna chahate hain?')"><button class="btn btn-sm btn-secondary">Delete</button></form>
+                                {% endif %}
+                            
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card bg-dark text-white mb-4">
+            <div class="card-header bg-secondary">All Treks</div>
+            <div class="card-body">
+                <table class="table table-dark table-striped table-sm">
+                    <thead><tr><th>Destination</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Guide</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        {% for t in treks %}
+                        <tr>
+                            <td>{{ t.destination }}</td>
+                            <td>{{ t.commencement_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ t.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ t.trek_status }}</td>
+                            <td>{{ t.guide.identity_handle if t.guide else 'Unassigned' }}</td>
+                            <td>
+                                <a href="/manager/edit_trek/{{ t.tid }}" class="btn btn-sm btn-primary">Edit</a>
+                                <form method="POST" action="/manager/delete_trek/{{ t.tid }}" class="d-inline">
+                                    <button class="btn btn-sm btn-danger">Del</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No treks found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2 mb-5">
+    <div class="col-md-12">
+        <div class="card bg-dark text-white">
+            <div class="card-header bg-secondary">All Reservations</div>
+            <div class="card-body">
+                <table class="table table-dark table-striped table-sm">
+                    <thead><tr><th>Trek</th><th>Client</th><th>Date</th><th>Status</th></tr></thead>
+                    <tbody>
+                        {% for r in reservations %}
+                        <tr>
+                            <td>{{ r.trek.destination }}</td>
+                            <td>{{ r.client.identity_handle }}</td>
+                            <td>{{ r.timestamp.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ r.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

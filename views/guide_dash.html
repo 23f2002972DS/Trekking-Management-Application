@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block nav %}
+<li class="nav-item"><a class="nav-link active" href="/guide/dash">Guide Dashboard</a></li>
+{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h2>My Assigned Treks</h2>
+    </div>
+</div>
+
+<div class="row mt-4">
+    {% for t in treks %}
+    <div class="col-md-6 mb-4">
+        <div class="card bg-dark text-white border-info">
+            <div class="card-body">
+                <h5 class="card-title text-info">{{ t.destination }}</h5>
+                <p><strong>Region:</strong> {{ t.region }}</p>
+                <p><strong>Challenge:</strong> {{ t.challenge_level }}</p>
+                {% if t.duration %}<p><strong>Duration:</strong> {{ t.duration }} days</p>{% endif %}
+                <p><strong>Dates:</strong> {{ t.commencement_date.strftime('%Y-%m-%d') }} to {{ t.end_date.strftime('%Y-%m-%d') }}</p>
+                <form method="POST" action="/guide/update_trek/{{ t.tid }}">
+                    <div class="mb-2">
+                        <label>Status</label>
+                        <select name="status" class="form-control bg-dark text-white">
+                            <option value="Open" {% if t.trek_status == 'Open' %}selected{% endif %}>Open</option>
+                            <option value="Closed" {% if t.trek_status == 'Closed' %}selected{% endif %}>Closed</option>
+                            <option value="Completed" {% if t.trek_status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Open Slots (Max {{ t.capacity }})</label>
+                        <input type="number" name="slots" value="{{ t.open_slots }}" max="{{ t.capacity }}" min="0" class="form-control bg-dark text-white">
+                    </div>
+                    <button class="btn btn-info w-100 mt-2">Update Trek</button>
+                </form>
+                
+                <div class="mt-4">
+                    <h6 class="text-success">Enrolled Clients ({{ trek_reservations[t.tid]|length }})</h6>
+                    {% if trek_reservations[t.tid] %}
+                    <table class="table table-sm table-dark mt-2">
+                        <thead><tr><th>Client</th><th>Reserved On</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for r in trek_reservations[t.tid] %}
+                            <tr>
+                                <td>{{ r.client.identity_handle }}</td>
+                                <td>{{ r.timestamp.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if r.status == 'Booked' %}<span class="badge bg-primary">{{ r.status }}</span>
+                                    {% elif r.status == 'Completed' %}<span class="badge bg-success">{{ r.status }}</span>
+                                    {% elif r.status == 'Cancelled' %}<span class="badge bg-danger">{{ r.status }}</span>
+                                    {% else %}<span class="badge bg-secondary">{{ r.status }}</span>{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted small">No clients enrolled yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

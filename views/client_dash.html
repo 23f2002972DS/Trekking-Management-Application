@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block nav %}
+<li class="nav-item"><a class="nav-link active" href="/client/dash">Client Dashboard</a></li>
+{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h2>Available Treks</h2>
+    </div>
+    <div class="col-md-6">
+        <form method="GET" action="/client/dash" class="d-flex">
+            <input class="form-control bg-dark text-white me-2" type="search" name="q" placeholder="Search destination..." value="{{ q }}">
+            <select name="diff" class="form-control bg-dark text-white me-2" style="max-width: 150px;">
+                <option value="">-- All Levels --</option>
+                <option value="Easy" {% if diff == 'Easy' %}selected{% endif %}>Easy</option>
+                <option value="Moderate" {% if diff == 'Moderate' %}selected{% endif %}>Moderate</option>
+                <option value="Hard" {% if diff == 'Hard' %}selected{% endif %}>Hard</option>
+            </select>
+            <button class="btn btn-outline-info" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    {% for t in treks %}
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark text-white border-primary shadow">
+            <div class="card-body">
+                <span class="badge bg-success float-end">{{ t.open_slots }} Spots</span>
+                <h5 class="card-title text-primary">{{ t.destination }}</h5>
+                <p class="mb-1"><strong>Region:</strong> {{ t.region }}</p>
+                <p class="mb-1"><strong>Difficulty:</strong> {{ t.challenge_level }}</p>
+                {% if t.duration %}<p class="mb-1"><strong>Duration:</strong> {{ t.duration }} days</p>{% endif %}
+                <p class="mb-1"><strong>Dates:</strong> {{ t.commencement_date.strftime('%Y-%m-%d') }} to {{ t.end_date.strftime('%Y-%m-%d') }}</p>
+                <form method="POST" action="/client/book/{{ t.tid }}">
+                    <button class="btn btn-primary w-100 mt-3">Book Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        {% if matched_count and matched_count > 0 and available_count == 0 %}
+        <div class="alert alert-info">We found {{ matched_count }} matching trek(s).</div>
+        {% else %}
+        <div class="alert alert-warning">No treks found matching your search.</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h2 class="text-success">My Reservations</h2>
+        <div class="row mt-3">
+            {% for r in my_res %}
+            <div class="col-md-4 mb-3">
+                <div class="card bg-dark text-white border-success">
+                    <div class="card-body">
+                        <span class="badge bg-info float-end">{{ r.status }}</span>
+                        <h6 class="text-success">{{ r.trek.destination }}</h6>
+                        <small><strong>Date:</strong> {{ r.trek.commencement_date.strftime('%Y-%m-%d') }}</small><br>
+                        <small><strong>Trek Status:</strong> {{ r.trek.trek_status }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

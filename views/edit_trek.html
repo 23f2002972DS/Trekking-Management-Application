@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block nav %}
+<li class="nav-item"><a class="nav-link" href="/manager/dash">Admin Dash</a></li>
+<li class="nav-item"><a class="nav-link active" href="#">Edit Trek</a></li>
+{% endblock %}
+{% block content %}
+<div class="row mt-4 justify-content-center">
+    <div class="col-md-8">
+        <div class="card bg-dark text-white">
+            <div class="card-header bg-secondary">Edit Trek: {{ t.destination }}</div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-2"><label>Destination</label><input type="text" name="dest" class="form-control bg-dark text-white" value="{{ t.destination }}" required></div>
+                    <div class="mb-2"><label>Region</label><input type="text" name="region" class="form-control bg-dark text-white" value="{{ t.region }}" required></div>
+                    <div class="mb-2">
+                        <label>Challenge Level</label>
+                        <select name="difficulty" class="form-control bg-dark text-white" required>
+                            <option value="Easy" {% if t.challenge_level == 'Easy' %}selected{% endif %}>Easy</option>
+                            <option value="Moderate" {% if t.challenge_level == 'Moderate' %}selected{% endif %}>Moderate</option>
+                            <option value="Hard" {% if t.challenge_level == 'Hard' %}selected{% endif %}>Hard</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label>Duration (days)</label><input type="number" name="duration" class="form-control bg-dark text-white" value="{{ t.duration or '' }}"></div>
+                    <div class="mb-2"><label>Capacity</label><input type="number" name="cap" class="form-control bg-dark text-white" value="{{ t.capacity }}" required></div>
+                    <div class="mb-2"><label>Open Slots</label><input type="number" name="open_slots" class="form-control bg-dark text-white" value="{{ t.open_slots }}" required></div>
+                    <div class="mb-2"><label>Start Date</label><input type="date" name="start_date" class="form-control bg-dark text-white" value="{{ t.commencement_date.strftime('%Y-%m-%d') }}" required></div>
+                    <div class="mb-2"><label>End Date</label><input type="date" name="end_date" class="form-control bg-dark text-white" value="{{ t.end_date.strftime('%Y-%m-%d') }}" required></div>
+                    <div class="mb-2">
+                        <label>Status</label>
+                        <select name="trek_status" class="form-control bg-dark text-white" required>
+                            <option value="Pending Approval" {% if t.trek_status == 'Pending Approval' %}selected{% endif %}>Pending Approval</option>
+                            <option value="Open" {% if t.trek_status == 'Open' %}selected{% endif %}>Open</option>
+                            <option value="Closed" {% if t.trek_status == 'Closed' %}selected{% endif %}>Closed</option>
+                            <option value="Completed" {% if t.trek_status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Assign Guide</label>
+                        <select name="guide_id" class="form-control bg-dark text-white">
+                            <option value="">-- Unassigned --</option>
+                            {% for g in guides %}
+                                <option value="{{ g.pid }}" {% if t.coordinator_id == g.pid %}selected{% endif %}>{{ g.identity_handle }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100">Save Changes</button>
+                    <a href="/manager/dash" class="btn btn-secondary w-100 mt-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
