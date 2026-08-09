@@ -11,18 +11,18 @@
                 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
                 <form method="POST" action="/auth/register">
                     <div class="mb-3">
-                        <label>Handle</label>
-                        <input type="text" name="identity" class="form-control bg-dark text-white" required>
+                        <label>Username:</label>
+                        <input placeholder="Enter username..." type="text" name="identity" class="form-control bg-dark text-white" required>
                     </div>
                     <div class="mb-3">
-                        <label>Passkey</label>
-                        <input type="password" name="password" class="form-control bg-dark text-white" required>
+                        <label>Password:</label>
+                        <input placeholder="Enter password..." type="password" name="password" class="form-control bg-dark text-white" required>
                     </div>
                     <div class="mb-3">
                         <label>Profile Type</label>
                         <select name="profile" class="form-control bg-dark text-white" required>
-                            <option value="client">Client</option>
-                            <option value="guide">Guide</option>
+                            <option value="client">User</option>
+                            <option value="guide">Staff</option>
                             
                         </select>
                     </div>

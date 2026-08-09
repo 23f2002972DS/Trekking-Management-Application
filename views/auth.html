@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block nav %}
-<li class="nav-item"><a class="nav-link active" href="/client/login">Logout</a></li>
+<li class="nav-item"><a class="nav-link active" href="/client/login">LOGOUT</a></li>
 {% endblock %}
 {% block content %}
 <div class="row justify-content-center mt-5">
@@ -11,12 +11,12 @@
                 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
                 <form method="POST" action="/client/login">
                     <div class="mb-3">
-                        <label>Handle</label>
-                        <input type="text" name="handle" class="form-control bg-dark text-white" required>
+                        <label>Username:</label>
+                        <input placeholder="Enter username..." type="text" name="handle" class="form-control bg-dark text-white" required>
                     </div>
                     <div class="mb-3">
-                        <label>Passkey</label>
-                        <input type="password" name="pwd" class="form-control bg-dark text-white" required>
+                        <label>Password:</label>
+                        <input placeholder="Enter password..." type="password" name="pwd" class="form-control bg-dark text-white" required>
                     </div>
                     <button class="btn btn-primary w-100">Login</button>
                 </form>
