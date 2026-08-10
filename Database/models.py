@@ -43,4 +43,4 @@ class Reservation(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     
     client = db.relationship('Person', backref='reservations')
-    trek = db.relationship('Trek', backref='reservations')
+    trek = db.relationship('Trek', backref='reservations') 
