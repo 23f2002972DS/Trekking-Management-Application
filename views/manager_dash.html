@@ -83,7 +83,7 @@
                                 {% if u.is_active and u.profile_type != 'manager' %}
                                 <form method="POST" action="/manager/ban/{{ u.pid }}" class="d-inline"><button class="btn btn-sm btn-danger">Ban</button></form>
                                 {% else %}
-                                <form method="POST" action="/manager/delete_user/{{ u.pid }}" class="d-inline" onsubmit="return confirm('Kya aap yeh user ko delete karna chahate hain?')"><button class="btn btn-sm btn-secondary">Delete</button></form>
+                                <form method="POST" action="/manager/delete_user/{{ u.pid }}" class="d-inline" onsubmit="return confirm('Are you sure to delete this user permanently?')"><button class="btn btn-sm btn-secondary">Delete</button></form>
                                 {% endif %}
                             
                             </td>
