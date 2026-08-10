@@ -60,4 +60,4 @@ Potential future enhancements include:
 - email notifications for bookings and approvals
 - improved search and filtering for treks
 - responsive/mobile-friendly UI
-- reporting and analytics for manager insights
+- reporting and analytics for manager insights 
