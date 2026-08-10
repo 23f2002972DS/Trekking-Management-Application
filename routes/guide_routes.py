@@ -22,4 +22,4 @@ def update_trek(tid):
         t.trek_status = request.form.get('status')
         t.open_slots = int(request.form.get('slots'))
         db.session.commit()
-    return redirect('/guide/dash')
+    return redirect('/guide/dash') 

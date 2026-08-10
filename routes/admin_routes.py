@@ -112,4 +112,4 @@ def delete_user(pid):
         Reservations = Reservation.query.filter_by(client_id=pid).delete()
         db.session.delete(prof)
         db.session.commit()
-    return redirect('/manager/dash')    
+    return redirect('/manager/dash') 

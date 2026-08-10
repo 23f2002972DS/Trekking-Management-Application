@@ -68,4 +68,4 @@ def book_trek(tid):
 @client_bp.route('/logout')
 def logout():
     session.clear()
-    return redirect('/client/login')
+    return redirect('/client/login') 
